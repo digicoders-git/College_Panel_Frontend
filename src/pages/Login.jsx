@@ -109,12 +109,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          New student?{" "}
-          <Link to="/register" className="text-blue-600 font-medium hover:underline">
-            Register here
-          </Link>
-        </p>
+       
       </div>
     </div>
   );
