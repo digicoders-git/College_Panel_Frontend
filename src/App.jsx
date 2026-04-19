@@ -1,8 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
+import { LoadingProvider, useLoading } from "./context/LoadingContext";
+import { useEffect } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/DashboardLayout";
+import Loader from "./components/Loader";
 
 // Public
 import Login from "./pages/Login";
@@ -80,83 +83,104 @@ const STUDENT_NAV = [
   { to: "/student/profile",       label: "Profile",      icon: User },
 ];
 
+function RouteChangeLoader() {
+  const location = useLocation();
+  const { setLoading } = useLoading();
+
+  useEffect(() => {
+    // Show loader briefly on route change to confirm "page change"
+    setLoading(true);
+    const timeout = setTimeout(() => setLoading(false), 300);
+    return () => {
+      clearTimeout(timeout);
+      setLoading(false);
+    };
+  }, [location.pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" />
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<StudentRegister />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
+    <LoadingProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" />
+          <Loader />
+          <RouteChangeLoader />
+          <Routes>
+            {/* Public */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<StudentRegister />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* SuperAdmin */}
-          <Route path="/superadmin" element={
-            <ProtectedRoute allowedRoles={["superadmin"]}>
-              <DashboardLayout navItems={SUPER_ADMIN_NAV} title="Super Admin" />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard"              element={<SuperAdminDashboard />} />
-            <Route path="colleges"               element={<SuperAdminColleges />} />
-            <Route path="colleges/:id/stats"     element={<CollegeStats />} />
-            <Route path="branches"               element={<SuperAdminBranches />} />
-            <Route path="profile"                element={<SuperAdminProfile />} />
-          </Route>
+            {/* SuperAdmin */}
+            <Route path="/superadmin" element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <DashboardLayout navItems={SUPER_ADMIN_NAV} title="Super Admin" />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard"              element={<SuperAdminDashboard />} />
+              <Route path="colleges"               element={<SuperAdminColleges />} />
+              <Route path="colleges/:id/stats"     element={<CollegeStats />} />
+              <Route path="branches"               element={<SuperAdminBranches />} />
+              <Route path="profile"                element={<SuperAdminProfile />} />
+            </Route>
 
-          {/* College */}
-          <Route path="/college" element={
-            <ProtectedRoute allowedRoles={["college"]}>
-              <DashboardLayout navItems={COLLEGE_NAV} title="College Panel" />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard"     element={<CollegeDashboard />} />
-            <Route path="branches"      element={<CollegeBranches />} />
-            <Route path="roles"         element={<CollegeRoles />} />
-            <Route path="staff"         element={<CollegeStaff />} />
-            <Route path="students"      element={<CollegeStudents />} />
-            <Route path="notices"       element={<StaffNotices />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="profile"       element={<CollegeProfile />} />
-          </Route>
+            {/* College */}
+            <Route path="/college" element={
+              <ProtectedRoute allowedRoles={["college"]}>
+                <DashboardLayout navItems={COLLEGE_NAV} title="College Panel" />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard"     element={<CollegeDashboard />} />
+              <Route path="branches"      element={<CollegeBranches />} />
+              <Route path="roles"         element={<CollegeRoles />} />
+              <Route path="staff"         element={<CollegeStaff />} />
+              <Route path="students"      element={<CollegeStudents />} />
+              <Route path="notices"       element={<StaffNotices />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="profile"       element={<CollegeProfile />} />
+            </Route>
 
-          {/* Staff */}
-          <Route path="/staff" element={
-            <ProtectedRoute allowedRoles={["staff"]}>
-              <DashboardLayout navItems={STAFF_NAV} title="Staff Panel" />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard"     element={<StaffDashboard />} />
-            <Route path="students"      element={<StaffStudents />} />
-            <Route path="notices"       element={<StaffNotices />} />
-            <Route path="timetable"     element={<Timetable />} />
-            <Route path="calendar"      element={<CalendarPage />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="profile"       element={<StaffProfile />} />
-          </Route>
+            {/* Staff */}
+            <Route path="/staff" element={
+              <ProtectedRoute allowedRoles={["staff"]}>
+                <DashboardLayout navItems={STAFF_NAV} title="Staff Panel" />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard"     element={<StaffDashboard />} />
+              <Route path="students"      element={<StaffStudents />} />
+              <Route path="notices"       element={<StaffNotices />} />
+              <Route path="timetable"     element={<Timetable />} />
+              <Route path="calendar"      element={<CalendarPage />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="profile"       element={<StaffProfile />} />
+            </Route>
 
-          {/* Student */}
-          <Route path="/student" element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <DashboardLayout navItems={STUDENT_NAV} title="Student Panel" />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard"     element={<StudentDashboard />} />
-            <Route path="notices"       element={<StaffNotices />} />
-            <Route path="timetable"     element={<Timetable />} />
-            <Route path="calendar"      element={<CalendarPage />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="profile"       element={<StudentProfile />} />
-          </Route>
+            {/* Student */}
+            <Route path="/student" element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <DashboardLayout navItems={STUDENT_NAV} title="Student Panel" />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard"     element={<StudentDashboard />} />
+              <Route path="notices"       element={<StaffNotices />} />
+              <Route path="timetable"     element={<Timetable />} />
+              <Route path="calendar"      element={<CalendarPage />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="profile"       element={<StudentProfile />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </LoadingProvider>
   );
 }
