@@ -33,6 +33,13 @@ const PERMISSION_GROUPS = [
       { value: "view_calendar",   label: "View Calendar" },
     ],
   },
+  {
+    module: "Resources",
+    permissions: [
+      { value: "manage_resources", label: "Manage Resources" },
+      { value: "view_resources",   label: "View Resources" },
+    ],
+  },
 ];
 
 const ALL_PERMISSIONS = PERMISSION_GROUPS.flatMap((g) => g.permissions);

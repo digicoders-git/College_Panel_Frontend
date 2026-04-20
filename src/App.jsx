@@ -41,10 +41,11 @@ import StudentProfile from "./pages/student/Profile";
 import Timetable from "./pages/shared/Timetable";
 import CalendarPage from "./pages/shared/Calendar";
 import Notifications from "./pages/shared/Notifications";
+import Resources from "./pages/shared/Resources";
 
 import {
   LayoutDashboard, Building2, Users, GraduationCap,
-  Bell, Clock, Calendar, GitBranch, Shield, User,
+  Bell, Clock, Calendar, GitBranch, Shield, User, BookOpen,
 } from "lucide-react";
 
 const SUPER_ADMIN_NAV = [
@@ -54,33 +55,36 @@ const SUPER_ADMIN_NAV = [
 ];
 
 const COLLEGE_NAV = [
-  { to: "/college/dashboard",     label: "Dashboard", icon: LayoutDashboard },
-  { to: "/college/branches",      label: "Branches",  icon: GitBranch },
-  { to: "/college/roles",         label: "Roles",     icon: Shield },
-  { to: "/college/staff",         label: "Staff",     icon: Users },
-  { to: "/college/students",      label: "Students",  icon: GraduationCap },
-  { to: "/college/notices",       label: "Notices",   icon: Bell },
+  { to: "/college/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
+  { to: "/college/branches",      label: "Branches",      icon: GitBranch },
+  { to: "/college/roles",         label: "Roles",         icon: Shield },
+  { to: "/college/staff",         label: "Staff",         icon: Users },
+  { to: "/college/students",      label: "Students",      icon: GraduationCap },
+  { to: "/college/notices",       label: "Notices",       icon: Bell },
+  { to: "/college/resources",     label: "Resources",     icon: BookOpen },
   { to: "/college/notifications", label: "Notifications", icon: Bell },
-  { to: "/college/profile",       label: "Profile",   icon: User },
+  { to: "/college/profile",       label: "Profile",       icon: User },
 ];
 
 const STAFF_NAV = [
-  { to: "/staff/dashboard",     label: "Dashboard",    icon: LayoutDashboard },
-  { to: "/staff/students",      label: "Students",     icon: GraduationCap },
-  { to: "/staff/notices",       label: "Notices",      icon: Bell },
-  { to: "/staff/timetable",     label: "Timetable",    icon: Clock },
-  { to: "/staff/calendar",      label: "Calendar",     icon: Calendar },
-  { to: "/staff/notifications", label: "Notifications",icon: Bell },
-  { to: "/staff/profile",       label: "Profile",      icon: User },
+  { to: "/staff/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
+  { to: "/staff/students",      label: "Students",      icon: GraduationCap },
+  { to: "/staff/notices",       label: "Notices",       icon: Bell },
+  { to: "/staff/resources",     label: "Resources",     icon: BookOpen },
+  { to: "/staff/timetable",     label: "Timetable",     icon: Clock },
+  { to: "/staff/calendar",      label: "Calendar",      icon: Calendar },
+  { to: "/staff/notifications", label: "Notifications", icon: Bell },
+  { to: "/staff/profile",       label: "Profile",       icon: User },
 ];
 
 const STUDENT_NAV = [
-  { to: "/student/dashboard",     label: "Dashboard",    icon: LayoutDashboard },
-  { to: "/student/notices",       label: "Notices",      icon: Bell },
-  { to: "/student/timetable",     label: "Timetable",    icon: Clock },
-  { to: "/student/calendar",      label: "Calendar",     icon: Calendar },
-  { to: "/student/notifications", label: "Notifications",icon: Bell },
-  { to: "/student/profile",       label: "Profile",      icon: User },
+  { to: "/student/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
+  { to: "/student/notices",       label: "Notices",       icon: Bell },
+  { to: "/student/resources",     label: "Resources",     icon: BookOpen },
+  { to: "/student/timetable",     label: "Timetable",     icon: Clock },
+  { to: "/student/calendar",      label: "Calendar",      icon: Calendar },
+  { to: "/student/notifications", label: "Notifications", icon: Bell },
+  { to: "/student/profile",       label: "Profile",       icon: User },
 ];
 
 function RouteChangeLoader() {
@@ -88,13 +92,9 @@ function RouteChangeLoader() {
   const { setLoading } = useLoading();
 
   useEffect(() => {
-    // Show loader briefly on route change to confirm "page change"
     setLoading(true);
     const timeout = setTimeout(() => setLoading(false), 300);
-    return () => {
-      clearTimeout(timeout);
-      setLoading(false);
-    };
+    return () => { clearTimeout(timeout); setLoading(false); };
   }, [location.pathname]);
 
   return null;
@@ -122,11 +122,11 @@ export default function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard"              element={<SuperAdminDashboard />} />
-              <Route path="colleges"               element={<SuperAdminColleges />} />
-              <Route path="colleges/:id/stats"     element={<CollegeStats />} />
-              <Route path="branches"               element={<SuperAdminBranches />} />
-              <Route path="profile"                element={<SuperAdminProfile />} />
+              <Route path="dashboard"          element={<SuperAdminDashboard />} />
+              <Route path="colleges"           element={<SuperAdminColleges />} />
+              <Route path="colleges/:id/stats" element={<CollegeStats />} />
+              <Route path="branches"           element={<SuperAdminBranches />} />
+              <Route path="profile"            element={<SuperAdminProfile />} />
             </Route>
 
             {/* College */}
@@ -142,6 +142,7 @@ export default function App() {
               <Route path="staff"         element={<CollegeStaff />} />
               <Route path="students"      element={<CollegeStudents />} />
               <Route path="notices"       element={<StaffNotices />} />
+              <Route path="resources"     element={<Resources />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="profile"       element={<CollegeProfile />} />
             </Route>
@@ -156,6 +157,7 @@ export default function App() {
               <Route path="dashboard"     element={<StaffDashboard />} />
               <Route path="students"      element={<StaffStudents />} />
               <Route path="notices"       element={<StaffNotices />} />
+              <Route path="resources"     element={<Resources />} />
               <Route path="timetable"     element={<Timetable />} />
               <Route path="calendar"      element={<CalendarPage />} />
               <Route path="notifications" element={<Notifications />} />
@@ -171,6 +173,7 @@ export default function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard"     element={<StudentDashboard />} />
               <Route path="notices"       element={<StaffNotices />} />
+              <Route path="resources"     element={<Resources />} />
               <Route path="timetable"     element={<Timetable />} />
               <Route path="calendar"      element={<CalendarPage />} />
               <Route path="notifications" element={<Notifications />} />
