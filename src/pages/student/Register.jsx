@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
+import { requestFcmToken } from "../../firebase";
 
 export default function StudentRegister() {
   const navigate = useNavigate();
@@ -50,7 +51,6 @@ export default function StudentRegister() {
   const handleRegister = async (e) => {
     if (e) e.preventDefault();
 
-    // Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) return toast.error("Invalid email address");
     if (!/^\d{10}$/.test(form.mobile)) return toast.error("Mobile number must be 10 digits");
@@ -58,7 +58,10 @@ export default function StudentRegister() {
 
     setLoading(true);
     try {
-      await api.post("/students/register", { ...form, collegeCode });
+      // FCM token pehle lo taaki approve hone pe notification mil sake
+      const fcmToken = await requestFcmToken().catch(() => null);
+      await api.post("/students/register", { ...form, collegeCode, fcmToken: fcmToken || undefined });
+      if (fcmToken) localStorage.setItem("pendingFcmToken", fcmToken);
       toast.success("Registration submitted! Pending approval.");
       navigate("/login");
     } catch (err) {
