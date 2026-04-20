@@ -3,16 +3,29 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { LogOut, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function DashboardLayout({ navItems, title }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out");
-    navigate("/login");
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout?",
+      text: "Kya aap logout karna chahte hain?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e53e3e",
+      cancelButtonColor: "#4a5568",
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "No",
+    });
+    if (result.isConfirmed) {
+      logout();
+      toast.success("Logged out");
+      navigate("/login");
+    }
   };
 
   const userName = user?.name || user?.collegeName || "User";
