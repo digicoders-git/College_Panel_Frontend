@@ -1,11 +1,42 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { requestFcmToken } from "../../firebase";
+import api from "../../api/axios";
 import { Bell, Clock, Calendar, User } from "lucide-react";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
+  const [showNotifBanner, setShowNotifBanner] = useState(false);
+
+  useEffect(() => {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      setShowNotifBanner(true);
+    }
+  }, []);
+
+  const handleAllowNotif = async () => {
+    setShowNotifBanner(false);
+    const fcmToken = await requestFcmToken();
+    if (fcmToken && fcmToken !== localStorage.getItem("fcmToken")) {
+      await api.patch("/notifications/fcm-token", { fcmToken }).catch(() => {});
+      localStorage.setItem("fcmToken", fcmToken);
+    }
+  };
 
   return (
     <div>
+      {showNotifBanner && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm text-blue-700">
+            <Bell size={16} />
+            <span>Notifications allow karo taaki approval updates mile</span>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button onClick={() => setShowNotifBanner(false)} className="text-xs text-gray-400 hover:text-gray-600">Baad mein</button>
+            <button onClick={handleAllowNotif} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700">Allow</button>
+          </div>
+        </div>
+      )}
       <h1 className="text-xl font-bold text-gray-800 mb-2">Welcome, {user?.name}</h1>
       <p className="text-sm text-gray-500 mb-6">
         {user?.college?.collegeName} · {user?.branch?.branchName}

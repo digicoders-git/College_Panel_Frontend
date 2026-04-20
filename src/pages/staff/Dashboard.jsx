@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { requestFcmToken } from "../../firebase";
 import { GraduationCap, Bell, Calendar, Clock, Copy, Check } from "lucide-react";
 
 const CopyLinkCard = ({ code }) => {
@@ -33,6 +34,22 @@ const CopyLinkCard = ({ code }) => {
 export default function StaffDashboard() {
   const { user } = useAuth();
   const [students, setStudents] = useState({ pending: 0, approved: 0, disapproved: 0 });
+  const [showNotifBanner, setShowNotifBanner] = useState(false);
+
+  useEffect(() => {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      setShowNotifBanner(true);
+    }
+  }, []);
+
+  const handleAllowNotif = async () => {
+    setShowNotifBanner(false);
+    const fcmToken = await requestFcmToken();
+    if (fcmToken && fcmToken !== localStorage.getItem("fcmToken")) {
+      await api.patch("/notifications/fcm-token", { fcmToken }).catch(() => {});
+      localStorage.setItem("fcmToken", fcmToken);
+    }
+  };
 
   useEffect(() => {
     api.get("/students/branch")
@@ -49,6 +66,18 @@ export default function StaffDashboard() {
 
   return (
     <div>
+      {showNotifBanner && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm text-blue-700">
+            <Bell size={16} />
+            <span>Notifications allow karo taaki student registration alerts mile</span>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button onClick={() => setShowNotifBanner(false)} className="text-xs text-gray-400 hover:text-gray-600">Baad mein</button>
+            <button onClick={handleAllowNotif} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700">Allow</button>
+          </div>
+        </div>
+      )}
       <h1 className="text-xl font-bold text-gray-800 mb-2">Welcome, {user?.name}</h1>
       <p className="text-sm text-gray-500 mb-6">Branch: {user?.branch?.branchName || "Not assigned"} | Role: {user?.role?.roleName || "—"}</p>
 
