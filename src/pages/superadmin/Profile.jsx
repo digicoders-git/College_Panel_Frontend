@@ -88,9 +88,9 @@ export default function SuperAdminProfile() {
 
         {/* Top — Avatar Card */}
         <div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             {/* Avatar */}
-            <div className="relative mb-4">
+            <div className="relative">
               {preview ? (
                 <img src={preview} alt="Profile"
                   className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-50" />
@@ -99,23 +99,25 @@ export default function SuperAdminProfile() {
                   <span className="text-2xl font-bold text-white">{initials}</span>
                 </div>
               )}
-              <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-700 transition shadow">
+              <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-700 transition shadow ring-2 ring-white">
                 <Camera size={13} />
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
             </div>
 
-            <div>
-              <h2 className="font-semibold text-gray-800 text-lg">{form.name || "—"}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">{profileData?.email}</p>
-              <div className="mt-2 flex items-center gap-3">
-                <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+            <div className="flex-1 min-w-0">
+              <h2 className="font-semibold text-gray-800 text-lg truncate">{form.name || "—"}</h2>
+              <p className="text-sm text-gray-500 mt-0.5 truncate">{profileData?.email}</p>
+              <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                   <Shield size={12} /> Super Admin
                 </div>
-                <span className="flex items-center gap-1.5 text-xs text-gray-500">
-                  <Phone size={12} /> {form.phone || "No phone"}
-                </span>
-                <span className="text-xs text-gray-400">
+                {form.phone && (
+                  <span className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <Phone size={12} /> {form.phone}
+                  </span>
+                )}
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">
                   Since {profileData?.createdAt ? new Date(profileData.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "short" }) : "—"}
                 </span>
               </div>

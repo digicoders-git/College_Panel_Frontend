@@ -139,55 +139,61 @@ export default function CollegeProfile() {
 
       {/* Top — College Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="flex items-center gap-5">
+        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
           {/* Logo */}
           <div className="relative shrink-0">
             {logoPreview ? (
               <img src={logoPreview} alt="Logo"
-                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-blue-50" />
+                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-blue-50 focus:ring-blue-100 transition-all" />
             ) : (
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center ring-4 ring-blue-50">
-                <span className="text-xl font-bold text-white">{initials}</span>
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center ring-4 ring-blue-50 shadow-lg shadow-blue-500/20">
+                <span className="text-xl font-bold text-white tracking-widest">{initials}</span>
               </div>
             )}
-            <label className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-700 transition shadow">
-              <Camera size={12} />
+            <label className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition shadow-lg ring-2 ring-white active:scale-90 duration-200">
+              <Camera size={12} strokeWidth={2.5} />
               <input type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
             </label>
           </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-bold text-gray-800">{college?.collegeName || "—"}</h2>
-            <p className="text-sm text-gray-500">{college?.collegeCode} · {college?.type}</p>
-            <div className="flex flex-wrap gap-3 mt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+              <h2 className="text-xl font-black text-gray-900 tracking-tight leading-tight truncate">{college?.collegeName || "—"}</h2>
+              <span className={`inline-flex self-center sm:self-auto px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${college?.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                {college?.isActive ? "Active" : "Inactive"}
+              </span>
+            </div>
+            
+            <p className="text-sm text-gray-400 font-semibold uppercase tracking-tighter mb-4">{college?.collegeCode} · {college?.type}</p>
+            
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
               {college?.city && (
-                <span className="flex items-center gap-1 text-xs text-gray-500">
-                  <MapPin size={11} /> {college.city}{college.state ? `, ${college.state}` : ""}
-                </span>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+                  <MapPin size={12} className="text-blue-500" /> 
+                  <span className="font-medium">{college.city}{college.state ? `, ${college.state}` : ""}</span>
+                </div>
               )}
               {college?.phone && (
-                <span className="flex items-center gap-1 text-xs text-gray-500">
-                  <Phone size={11} /> {college.phone}
-                </span>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+                  <Phone size={12} className="text-blue-500" /> 
+                  <span className="font-medium">{college.phone}</span>
+                </div>
               )}
               {college?.email && (
-                <span className="flex items-center gap-1 text-xs text-gray-500">
-                  <Mail size={11} /> {college.email}
-                </span>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+                  <Mail size={12} className="text-blue-500" /> 
+                  <span className="font-medium truncate max-w-[120px]">{college.email}</span>
+                </div>
               )}
               {college?.website && (
-                <span className="flex items-center gap-1 text-xs text-gray-500">
-                  <Globe size={11} /> {college.website}
-                </span>
+                <a href={college.website.startsWith('http') ? college.website : `https://${college.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition whitespace-nowrap">
+                  <Globe size={12} /> 
+                  <span className="font-bold underline">Visit Website</span>
+                </a>
               )}
             </div>
           </div>
-
-          {/* Status */}
-          <span className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium ${college?.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-            {college?.isActive ? "Active" : "Inactive"}
-          </span>
         </div>
       </div>
 

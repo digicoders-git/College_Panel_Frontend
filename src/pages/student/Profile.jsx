@@ -130,58 +130,73 @@ export default function StudentProfile() {
       )}
 
       {/* Profile Header Card */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex items-center gap-5">
+      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20">
+        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-2xl bg-white/20 border-2 border-white/40 overflow-hidden flex items-center justify-center text-2xl font-bold">
-              {preview ? <img src={preview} alt="Profile" className="w-full h-full object-cover" /> : initials}
+            <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 overflow-hidden flex items-center justify-center text-3xl font-black shadow-inner">
+              {preview ? (
+                <img src={preview} alt="Profile" className="w-full h-full object-cover rounded-[22px] p-0.5" />
+              ) : (
+                <span className="tracking-tighter">{initials}</span>
+              )}
             </div>
             {isEditing && (
-              <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer shadow-md">
-                <Camera size={13} className="text-blue-600" />
+              <label className="absolute -bottom-2 -right-2 w-9 h-9 bg-white rounded-2xl flex items-center justify-center cursor-pointer shadow-xl ring-4 ring-blue-600/20 active:scale-90 transition-transform duration-200">
+                <Camera size={16} className="text-blue-600" />
                 <input type="file" accept="image/*" className="hidden"
                   onChange={(e) => { const f = e.target.files[0]; if (f) { setProfilePic(f); setPreview(URL.createObjectURL(f)); } }} />
               </label>
             )}
           </div>
+          
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold truncate">{profileData?.name || user?.name}</h2>
-            <p className="text-blue-100 text-sm mt-0.5">{profileData?.email || user?.email}</p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              <span className="bg-white/20 text-white text-xs px-2.5 py-1 rounded-full">{profileData?.branch?.branchName || user?.branch?.branchName}</span>
-              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                (profileData?.status || user?.status) === "approved" ? "bg-green-400/30 text-green-100" :
-                (profileData?.status || user?.status) === "pending" ? "bg-yellow-400/30 text-yellow-100" :
-                "bg-red-400/30 text-red-100"
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 mb-2">
+              <h2 className="text-2xl font-black tracking-tight truncate leading-tight">{profileData?.name || user?.name}</h2>
+              <span className={`inline-flex self-center sm:self-auto px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border border-white/20 ${
+                (profileData?.status || user?.status) === "approved" ? "bg-green-400 text-green-900" :
+                (profileData?.status || user?.status) === "pending" ? "bg-yellow-400 text-yellow-900" :
+                "bg-red-400 text-red-100"
               }`}>
                 {profileData?.status || user?.status}
               </span>
             </div>
+            <p className="text-blue-100/80 text-sm font-medium mb-4">{profileData?.email || user?.email}</p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+              <span className="bg-white/10 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-white/10 uppercase tracking-wider tabular-nums">{profileData?.branch?.branchName || user?.branch?.branchName}</span>
+              <span className="bg-white/10 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-white/10 uppercase tracking-wider tabular-nums">Batch: {profileData?.academicDetails?.admissionYear || "—"}</span>
+            </div>
           </div>
-          {!isEditing ? (
-            <button onClick={() => setIsEditing(true)}
-              className="shrink-0 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl transition">
-              <Pencil size={16} />
-            </button>
-          ) : (
-            <button onClick={() => setIsEditing(false)}
-              className="shrink-0 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl transition">
-              <X size={16} />
-            </button>
-          )}
+          
+          <div className="flex gap-2">
+            {!isEditing ? (
+              <button onClick={() => setIsEditing(true)}
+                className="shrink-0 bg-white/10 hover:bg-white/25 text-white p-3 rounded-2xl transition-all active:scale-90 border border-white/10">
+                <Pencil size={18} strokeWidth={2.5} />
+              </button>
+            ) : (
+              <button onClick={() => setIsEditing(false)}
+                className="shrink-0 bg-white/10 hover:bg-red-500/20 text-white p-3 rounded-2xl transition-all active:scale-90 border border-white/10">
+                <X size={18} strokeWidth={2.5} />
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Quick Info */}
-        <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-white/20">
+        {/* Quick Info Grid */}
+        <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/10">
           {[
             { icon: Phone, label: "Mobile", value: profileData?.mobile || user?.mobile },
-            { icon: Mail, label: "Email", value: (profileData?.email || user?.email)?.split("@")[0] + "..." },
-            { icon: GraduationCap, label: "Roll No", value: profileData?.academicDetails?.rollNumber || "—" },
+            { icon: Mail, label: "Handle", value: (profileData?.email || user?.email)?.split("@")[0] },
+            { icon: GraduationCap, label: "Roll No", value: profileData?.academicDetails?.rollNumber },
           ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="flex flex-col items-center gap-1 text-center">
-              <Icon size={14} className="text-blue-200" />
-              <span className="text-[10px] text-blue-200">{label}</span>
-              <span className="text-xs font-semibold truncate w-full text-center">{value || "—"}</span>
+            <div key={label} className="flex flex-col items-center gap-1.5 text-center group">
+              <div className="p-2 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
+                <Icon size={14} className="text-blue-200" />
+              </div>
+              <div className="flex flex-col min-w-0 w-full">
+                <span className="text-[9px] font-bold text-blue-200 uppercase tracking-widest">{label}</span>
+                <span className="text-xs font-black truncate leading-tight mt-0.5">{value || "—"}</span>
+              </div>
             </div>
           ))}
         </div>

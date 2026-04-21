@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import Loader from "./components/Loader";
+import InstallPrompt from "./components/InstallPrompt";
+
 
 // Public
 import Login from "./pages/Login";
@@ -119,6 +121,16 @@ export default function App() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  const handleInstall = () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    installPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === "accepted") {
+        setInstallPrompt(null);
+      }
+    });
+  };
+
   return (
     <LoadingProvider>
       <AuthProvider>
@@ -200,31 +212,10 @@ export default function App() {
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
 
-          {/* 🔥 Install Button */}
-          {installPrompt && (
-            <button
-              onClick={() => {
-                installPrompt.prompt();
-                installPrompt.userChoice.then(() => {
-                  setInstallPrompt(null);
-                });
-              }}
-              style={{
-                position: "fixed",
-                bottom: "20px",
-                right: "20px",
-                padding: "12px 16px",
-                background: "#1976d2",
-                color: "#fff",
-                borderRadius: "10px",
-                border: "none",
-                zIndex: 9999,
-                cursor: "pointer"
-              }}
-            >
-              ⬇️ Install App
-            </button>
-          )}
+          <InstallPrompt 
+            installPrompt={installPrompt} 
+            onInstall={handleInstall} 
+          />
         </BrowserRouter>
       </AuthProvider>
     </LoadingProvider>

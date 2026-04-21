@@ -154,25 +154,30 @@ export default function DashboardLayout({ navItems, title }) {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Mobile Top Header */}
-        <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100 shrink-0 safe-top">
+        <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-gray-100/50 shrink-0 sticky top-0 z-40 safe-top shadow-[0_1px_10px_rgba(0,0,0,0.02)]">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="p-2.5 rounded-2xl text-gray-600 bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all"
+            className="p-2.5 rounded-2xl text-gray-600 bg-gray-50/80 hover:bg-white hover:shadow-soft transition-all duration-300 active:scale-95"
           >
             <Menu size={20} />
           </button>
-          <h1 className="text-sm font-extrabold text-slate-800 uppercase tracking-[0.15em]">{title}</h1>
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-[10px] font-black text-white overflow-hidden shadow-lg shadow-blue-500/20">
+          
+          <div className="flex flex-col items-center">
+            <h1 className="text-[11px] font-bold text-blue-500 uppercase tracking-[0.2em] mb-0.5">{title}</h1>
+            <div className="h-1 w-4 bg-blue-500/20 rounded-full" />
+          </div>
+
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center p-[2px] shadow-lg shadow-blue-500/20 overflow-hidden ring-2 ring-white">
             {fullPicUrl ? (
-              <img src={fullPicUrl} alt="P" className="w-full h-full object-cover" />
+              <img src={fullPicUrl} alt="P" className="w-full h-full object-cover rounded-[14px]" />
             ) : (
-              initials
+              <span className="text-xs font-black text-white">{initials}</span>
             )}
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-5 lg:p-10 pb-28 lg:pb-10 bg-[#f8fafc] relative">
+        <main className="flex-1 overflow-y-auto p-5 lg:p-10 pb-36 lg:pb-10 bg-[#f8fafc] relative">
           <Loader />
           <div className="max-w-7xl mx-auto">
             <Outlet />

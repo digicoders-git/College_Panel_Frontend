@@ -109,39 +109,62 @@ export default function StaffProfile() {
         )}
       </div>
 
-      <form onSubmit={handleUpdate} className="bg-white rounded-xl shadow-sm p-6 space-y-5">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left transition-all hover:shadow-md">
+        {/* Avatar */}
+        <div className="relative shrink-0">
+          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center ring-4 ring-indigo-50 shadow-lg shadow-indigo-500/20 overflow-hidden">
+            {preview ? (
+              <img src={preview} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-2xl font-black text-white px-2">No Photo</span>
+            )}
+          </div>
+          {isEditing && (
+            <label className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-2 rounded-xl cursor-pointer hover:bg-blue-700 transition-all shadow-xl ring-2 ring-white active:scale-90">
+              <Camera size={14} strokeWidth={2.5} />
+              <input type="file" accept="image/*" className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setProfilePic(file);
+                    setPreview(URL.createObjectURL(file));
+                  }
+                }} />
+            </label>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 mb-2">
+            <h2 className="text-xl font-black text-gray-900 tracking-tight leading-tight truncate">{form.name || "—"}</h2>
+            <div className="inline-flex self-center sm:self-auto px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-[0.15em] border border-indigo-100">
+              {professional.designation || "Staff"}
+            </div>
+          </div>
+          <p className="text-sm text-gray-400 font-semibold mb-4">{professional.department || "No Department"}</p>
+          
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+              <Phone size={12} className="text-indigo-500" />
+              <span className="font-medium">{form.mobile || "—"}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold uppercase tracking-wider tabular-nums">
+              ID: {professional.employeeId || "—"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleUpdate} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
         {/* Basic */}
         <div>
-          <h2 className="font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-1">Basic Info</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <Field isEditing={isEditing} label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <Field isEditing={isEditing} label="Mobile" value={form.mobile} maxLength={10} onChange={(e) => setForm({ ...form, mobile: e.target.value.replace(/\D/g, "").slice(0, 10) })} />
-            <div className="col-span-2">
-              <label className="block text-xs font-medium text-gray-600 mb-2">Profile Picture</label>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden shrink-0">
-                  {preview ? (
-                    <img src={preview} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-1">No<br/>Photo</div>
-                  )}
-                </div>
-                {isEditing && (
-                  <div className="flex-1">
-                    <input type="file" accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setProfilePic(file);
-                          setPreview(URL.createObjectURL(file));
-                        }
-                      }}
-                      className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                    <p className="text-[10px] text-gray-400 mt-1">JPG, PNG or WEBP. Max 2MB.</p>
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 bg-indigo-50 rounded-lg"><User size={16} className="text-indigo-600" /></div>
+            <h2 className="font-bold text-gray-800">Account Details</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field isEditing={isEditing} label="Full Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <Field isEditing={isEditing} label="Mobile Number" value={form.mobile} maxLength={10} onChange={(e) => setForm({ ...form, mobile: e.target.value.replace(/\D/g, "").slice(0, 10) })} />
           </div>
         </div>
 
