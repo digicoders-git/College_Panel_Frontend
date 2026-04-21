@@ -3,6 +3,8 @@ import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { User, Phone, Camera, Lock, Eye, EyeOff, Shield } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
+
 
 export default function SuperAdminProfile() {
   const { login, role, token, user } = useAuth();
@@ -20,7 +22,7 @@ export default function SuperAdminProfile() {
       const a = r.data.admin;
       setProfileData(a);
       setForm({ name: a.name || "", phone: a.phone || "" });
-      if (a.profileImage) setPreview(`http://localhost:8000${a.profileImage}`);
+      if (a.profileImage) setPreview(getImgUrl(a.profileImage));
     }).catch(() => toast.error("Failed to load profile"));
   }, []);
 

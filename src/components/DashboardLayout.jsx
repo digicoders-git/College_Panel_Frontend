@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import Loader from "./Loader";
 
+import { getImgUrl } from "../utils/imageUrl";
+
 export default function DashboardLayout({ navItems, title }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ export default function DashboardLayout({ navItems, title }) {
   const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 
   const profilePicUrl = user?.profilePic || user?.profileImage || user?.logo;
-  const fullPicUrl = profilePicUrl ? `http://localhost:8000${profilePicUrl}` : null;
+  const fullPicUrl = getImgUrl(profilePicUrl);
 
   // Bottom nav: max 5 items on mobile
   const bottomNavItems = navItems.slice(0, 5);

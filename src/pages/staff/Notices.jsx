@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { Plus, Trash2, X } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
+
 
 export default function Notices() {
   const [notices, setNotices] = useState([]);
@@ -14,12 +16,6 @@ export default function Notices() {
   const [loading, setLoading] = useState(false);
 
   // Helper to get image URL
-  const getImgUrl = (path) => {
-    if (!path) return "https://via.placeholder.com/150";
-    if (path.startsWith("http")) return path;
-    const base = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace("/api", "") : "http://localhost:8000";
-    return `${base}${path}`;
-  };
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);

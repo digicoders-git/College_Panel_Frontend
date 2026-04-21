@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Building2, Camera, Lock, Eye, EyeOff, MapPin, Phone, Globe, Mail } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
+
 
 const F = ({ label, k, form, setForm, type = "text", span = false, maxLength, isEditing }) => (
   <div className={span ? "sm:col-span-2" : ""}>
@@ -46,7 +48,7 @@ export default function CollegeProfile() {
     api.get("/colleges/profile").then((r) => {
       const c = r.data.college;
       setCollege(c);
-      setLogoPreview(c.logo ? `http://localhost:8000${c.logo}` : null);
+      setLogoPreview(getImgUrl(c.logo));
       setForm({
         collegeName: c.collegeName || "", collegeShortName: c.collegeShortName || "",
         affiliation: c.affiliation || "", establishmentYear: c.establishmentYear || "",
@@ -309,7 +311,7 @@ export default function CollegeProfile() {
                 <div className="text-sm text-gray-500 italic">Switch to edit mode to change cover</div>
               )}
               {college?.coverImage && !coverFile && (
-                <img src={`http://localhost:8000${college.coverImage}`} alt="cover"
+                <img src={getImgUrl(college.coverImage)} alt="cover"
                   className="mt-2 w-full h-20 rounded-xl object-cover" />
               )}
             </div>

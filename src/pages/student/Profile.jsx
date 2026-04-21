@@ -3,8 +3,9 @@ import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { User, Phone, Mail, BookOpen, GraduationCap, Lock, Pencil, X, Check, Camera } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
 
-const BASE_URL = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:8000";
+
 
 const InfoRow = ({ label, value }) => (
   <div className="flex flex-col gap-0.5">
@@ -59,7 +60,7 @@ export default function StudentProfile() {
       setForm({ name: s.name || "", mobile: s.mobile || "" });
       setPersonal(s.personalDetails || {});
       setAcademic(s.academicDetails || {});
-      if (s.profilePic) setPreview(s.profilePic.startsWith("http") ? s.profilePic : `${BASE_URL}${s.profilePic}`);
+      if (s.profilePic) setPreview(getImgUrl(s.profilePic));
     }).catch(() => toast.error("Failed to load profile"));
   };
 
@@ -91,7 +92,7 @@ export default function StudentProfile() {
       setForm({ name: s.name || "", mobile: s.mobile || "" });
       setPersonal(s.personalDetails || {});
       setAcademic(s.academicDetails || {});
-      if (s.profilePic) setPreview(s.profilePic.startsWith("http") ? s.profilePic : `${BASE_URL}${s.profilePic}`);
+      if (s.profilePic) setPreview(getImgUrl(s.profilePic));
       setProfilePic(null);
       toast.success("Profile updated!");
       setIsEditing(false);

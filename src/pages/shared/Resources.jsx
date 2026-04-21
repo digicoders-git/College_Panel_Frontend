@@ -3,8 +3,9 @@ import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { Plus, Trash2, X, BookOpen, Download, ExternalLink, FolderPlus, Search, Filter } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
 
-const BASE_URL = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:8000";
+
 
 const CATEGORY_COLORS = [
   "bg-blue-50 text-blue-700 border-blue-200",
@@ -206,7 +207,7 @@ export default function Resources() {
                         </div>
                         <div className="flex items-center gap-2 ml-3 shrink-0">
                           {r.fileUrl && (
-                            <a href={`${BASE_URL}${r.fileUrl}`} target="_blank" rel="noreferrer"
+                            <a href={getImgUrl(r.fileUrl)} target="_blank" rel="noreferrer"
                               className="flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2.5 py-1.5 rounded-lg hover:bg-green-100 transition">
                               <Download size={12} /> Download
                             </a>

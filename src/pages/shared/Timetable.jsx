@@ -3,6 +3,8 @@ import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { Plus, Trash2, X, FileText, Download } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
+
 
 export default function Timetable() {
   const { role } = useAuth();
@@ -74,7 +76,7 @@ export default function Timetable() {
                 {t.branch?.branchName} · {new Date(t.createdAt).toLocaleDateString()}
               </p>
               <p className="text-xs text-gray-400">By {t.uploadedBy?.name}</p>
-              <a href={`http://localhost:8000${t.fileUrl}`} target="_blank" rel="noreferrer"
+              <a href={getImgUrl(t.fileUrl)} target="_blank" rel="noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1">
                 <Download size={12} /> Download
               </a>

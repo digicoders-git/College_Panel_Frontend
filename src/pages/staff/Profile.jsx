@@ -3,6 +3,8 @@ import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { getImgUrl } from "../../utils/imageUrl";
+
 
 const Field = ({ label, value, onChange, type = "text", maxLength, isEditing }) => (
   <div>
@@ -32,12 +34,6 @@ export default function StaffProfile() {
   const [pwLoading, setPwLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const getImgUrl = (path) => {
-    if (!path) return null;
-    if (path.startsWith("http")) return path;
-    const base = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace("/api", "") : "http://localhost:8000";
-    return `${base}${path}`;
-  };
 
   const populateForm = (s) => {
     setForm({ name: s.name || "", mobile: s.mobile || "" });
@@ -76,8 +72,7 @@ export default function StaffProfile() {
       login({ token, role, user: data.staff });
       setProfilePic(null);
       if (data.staff.profilePic) {
-        const base = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace("/api", "") : "http://localhost:8000";
-        setPreview(`${base}${data.staff.profilePic}`);
+        setPreview(getImgUrl(data.staff.profilePic));
       }
       toast.success("Profile updated!");
       setIsEditing(false);

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { CheckCircle, XCircle, Trash2, Eye, X, User, Phone, Mail, BookOpen, GraduationCap } from "lucide-react";
+import { getImgUrl } from "../../utils/imageUrl";
 
-const BASE_URL = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:8000";
+
 
 const STATUS_COLORS = {
   pending:     "bg-yellow-100 text-yellow-700",
@@ -29,9 +30,7 @@ const SectionBlock = ({ title, icon: Icon, color, children }) => (
 );
 
 function StudentDetailModal({ student, onClose }) {
-  const pic = student.profilePic
-    ? (student.profilePic.startsWith("http") ? student.profilePic : `${BASE_URL}${student.profilePic}`)
-    : null;
+  const pic = getImgUrl(student.profilePic);
   const initials = student.name?.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) || "S";
   const p = student.personalDetails || {};
   const a = student.academicDetails || {};
