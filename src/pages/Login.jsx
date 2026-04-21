@@ -131,15 +131,10 @@ export default function Login() {
           </form>
 
           {/* Additional Links (Optional) */}
-          <div className="mt-8 pt-8 border-t border-gray-50 flex items-center justify-between text-sm">
-            <span className="text-gray-400 font-medium">New student?</span>
-            <Link to="/register" className="text-blue-600 font-bold hover:text-blue-700 transition-colors">Create Account</Link>
-          </div>
+          
         </div>
 
-        <p className="text-center mt-10 text-gray-400 text-xs font-semibold tracking-widest uppercase">
-          &copy; 2026 Admin Portal System
-        </p>
+         
       </div>
     </div>
   );
