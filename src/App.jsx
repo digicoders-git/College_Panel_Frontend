@@ -106,7 +106,6 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Toaster position="top-right" />
-          <Loader />
           <RouteChangeLoader />
           <Routes>
             {/* Public */}

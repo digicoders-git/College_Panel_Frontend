@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+:root {
+  font-family: "Outfit", sans-serif;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
 /* Safe area for notch/home indicator */
 .safe-top {
   padding-top: env(safe-area-inset-top);

@@ -31,6 +31,32 @@ const CopyLinkCard = ({ code }) => {
   );
 };
 
+const StatCard = ({ label, value, icon: Icon, color }) => (
+  <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm shadow-blue-900/5 group hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300">
+    <div className="flex items-start justify-between mb-4">
+      <div className={`p-4 rounded-2xl ${color} shadow-lg shadow-current/10 group-hover:scale-110 transition-transform duration-300`}>
+        <Icon size={24} className="text-white" />
+      </div>
+    </div>
+    <div>
+      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-3xl font-black text-slate-800 tracking-tight">{value}</p>
+    </div>
+  </div>
+);
+
+const ActionCard = ({ label, icon: Icon, link, color }) => (
+  <a 
+    href={link} 
+    className={`rounded-3xl border p-6 flex items-center gap-4 hover:shadow-xl transition-all duration-300 bg-white group hover:-translate-y-1 ${color}`}
+  >
+    <div className="p-3 rounded-2xl bg-slate-50 group-hover:bg-white transition-colors">
+      <Icon size={24} />
+    </div>
+    <span className="font-black text-slate-700 tracking-tight">{label}</span>
+  </a>
+);
+
 export default function StaffDashboard() {
   const { user } = useAuth();
   const [students, setStudents] = useState({ pending: 0, approved: 0, disapproved: 0 });
@@ -65,54 +91,53 @@ export default function StaffDashboard() {
   }, []);
 
   return (
-    <div>
+    <div className="space-y-10 animate-loader-fade-in">
       {showNotifBanner && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm text-blue-700">
-            <Bell size={16} />
-            <span>Notifications allow karo taaki student registration alerts mile</span>
+        <div className="bg-blue-600 rounded-[2rem] p-6 text-white shadow-xl shadow-blue-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden relative group">
+          <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+            <Bell size={120} />
           </div>
-          <div className="flex gap-2 shrink-0">
-            <button onClick={() => setShowNotifBanner(false)} className="text-xs text-gray-400 hover:text-gray-600">Baad mein</button>
-            <button onClick={handleAllowNotif} className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700">Allow</button>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
+              <Bell size={24} className="animate-bounce" />
+            </div>
+            <div>
+              <p className="font-black text-lg tracking-tight">Stay Updated!</p>
+              <p className="text-blue-100 text-sm font-medium">Allow notifications for real-time student registration alerts.</p>
+            </div>
+          </div>
+          <div className="flex gap-3 relative z-10">
+            <button onClick={() => setShowNotifBanner(false)} className="px-5 py-2.5 text-xs font-bold text-white/70 hover:text-white transition-colors">Maybe later</button>
+            <button onClick={handleAllowNotif} className="px-6 py-2.5 bg-white text-blue-600 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-black/10 hover:bg-blue-50 transition-all">Allow Now</button>
           </div>
         </div>
       )}
-      <h1 className="text-xl font-bold text-gray-800 mb-2">Welcome, {user?.name}</h1>
-      <p className="text-sm text-gray-500 mb-6">Branch: {user?.branch?.branchName || "Not assigned"} | Role: {user?.role?.roleName || "—"}</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <CopyLinkCard code={user?.college?.collegeCode} />
+      <header>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Welcome, {user?.name}</h1>
+        <div className="flex flex-wrap items-center gap-3 mt-2">
+          <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[11px] font-black uppercase tracking-widest rounded-lg">{user?.branch?.branchName || "Academic"}</span>
+          <div className="w-1 h-1 rounded-full bg-slate-300" />
+          <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[11px] font-black uppercase tracking-widest rounded-lg">{user?.role?.roleName}</span>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatCard label="Pending Approval"     value={students.pending}     icon={GraduationCap} color="bg-amber-500" />
+        <StatCard label="Approved Pupils"    value={students.approved}    icon={GraduationCap} color="bg-emerald-500" />
+        <StatCard label="Disapproved"        value={students.disapproved} icon={GraduationCap} color="bg-rose-500" />
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {[
-          { label: "Pending Students",     value: students.pending,     icon: GraduationCap, color: "bg-yellow-500" },
-          { label: "Approved Students",    value: students.approved,    icon: GraduationCap, color: "bg-green-500" },
-          { label: "Disapproved Students", value: students.disapproved, icon: GraduationCap, color: "bg-red-500" },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
-            <div className={`p-3 rounded-lg ${color}`}><Icon size={22} className="text-white" /></div>
-            <div>
-              <p className="text-sm text-gray-500">{label}</p>
-              <p className="text-2xl font-bold text-gray-800">{value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { label: "Notices",    icon: Bell,          link: "/staff/notices",   color: "bg-blue-50 text-blue-700 border-blue-200" },
-          { label: "Timetable",  icon: Clock,         link: "/staff/timetable", color: "bg-purple-50 text-purple-700 border-purple-200" },
-          { label: "Calendar",   icon: Calendar,      link: "/staff/calendar",  color: "bg-green-50 text-green-700 border-green-200" },
-        ].map(({ label, icon: Icon, link, color }) => (
-          <a key={label} href={link} className={`rounded-xl border p-5 flex items-center gap-3 hover:shadow-md transition ${color}`}>
-            <Icon size={20} />
-            <span className="font-medium">{label}</span>
-          </a>
-        ))}
-      </div>
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-black text-slate-800 tracking-tight">Quick Actions</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <ActionCard label="Notices"    icon={Bell}          link="/staff/notices"   color="hover:border-blue-200" />
+          <ActionCard label="Timetable"  icon={Clock}         link="/staff/timetable" color="hover:border-purple-200" />
+          <ActionCard label="Calendar"   icon={Calendar}      link="/staff/calendar"  color="hover:border-emerald-200" />
+        </div>
+      </section>
     </div>
   );
 }

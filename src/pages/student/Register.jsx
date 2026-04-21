@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 import { requestFcmToken } from "../../firebase";
+import Loader from "../../components/Loader";
 
 export default function StudentRegister() {
   const navigate = useNavigate();
@@ -72,7 +73,8 @@ export default function StudentRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 relative">
+      <Loader />
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-2">Student Registration</h1>
         <p className="text-center text-gray-500 mb-6 text-sm">Step {step} of 2</p>

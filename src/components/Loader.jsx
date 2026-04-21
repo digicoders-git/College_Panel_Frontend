@@ -6,8 +6,8 @@ export default function Loader() {
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/70 backdrop-blur-sm">
-      <div className="w-14 h-14 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin"></div>
+    <div className="absolute inset-0 z-[50] flex flex-col items-center justify-center bg-white/40 backdrop-blur-md animate-loader-fade-in pointer-events-none">
+      <div className="w-15 h-15 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin" />
     </div>
   );
 }
