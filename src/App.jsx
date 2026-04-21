@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import { LoadingProvider, useLoading } from "./context/LoadingContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import Loader from "./components/Loader";
@@ -48,6 +48,7 @@ import {
   Bell, Clock, Calendar, GitBranch, Shield, User, BookOpen,
 } from "lucide-react";
 
+// NAVS
 const SUPER_ADMIN_NAV = [
   { to: "/superadmin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/superadmin/colleges",  label: "Colleges",  icon: Building2 },
@@ -55,38 +56,39 @@ const SUPER_ADMIN_NAV = [
 ];
 
 const COLLEGE_NAV = [
-  { to: "/college/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
-  { to: "/college/branches",      label: "Branches",      icon: GitBranch },
-  { to: "/college/roles",         label: "Roles",         icon: Shield },
-  { to: "/college/staff",         label: "Staff",         icon: Users },
-  { to: "/college/students",      label: "Students",      icon: GraduationCap },
-  { to: "/college/notices",       label: "Notices",       icon: Bell },
-  { to: "/college/resources",     label: "Resources",     icon: BookOpen },
+  { to: "/college/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/college/branches", label: "Branches", icon: GitBranch },
+  { to: "/college/roles", label: "Roles", icon: Shield },
+  { to: "/college/staff", label: "Staff", icon: Users },
+  { to: "/college/students", label: "Students", icon: GraduationCap },
+  { to: "/college/notices", label: "Notices", icon: Bell },
+  { to: "/college/resources", label: "Resources", icon: BookOpen },
   { to: "/college/notifications", label: "Notifications", icon: Bell },
-  { to: "/college/profile",       label: "Profile",       icon: User },
+  { to: "/college/profile", label: "Profile", icon: User },
 ];
 
 const STAFF_NAV = [
-  { to: "/staff/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
-  { to: "/staff/students",      label: "Students",      icon: GraduationCap },
-  { to: "/staff/notices",       label: "Notices",       icon: Bell },
-  { to: "/staff/resources",     label: "Resources",     icon: BookOpen },
-  { to: "/staff/timetable",     label: "Timetable",     icon: Clock },
-  { to: "/staff/calendar",      label: "Calendar",      icon: Calendar },
+  { to: "/staff/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/staff/students", label: "Students", icon: GraduationCap },
+  { to: "/staff/notices", label: "Notices", icon: Bell },
+  { to: "/staff/resources", label: "Resources", icon: BookOpen },
+  { to: "/staff/timetable", label: "Timetable", icon: Clock },
+  { to: "/staff/calendar", label: "Calendar", icon: Calendar },
   { to: "/staff/notifications", label: "Notifications", icon: Bell },
-  { to: "/staff/profile",       label: "Profile",       icon: User },
+  { to: "/staff/profile", label: "Profile", icon: User },
 ];
 
 const STUDENT_NAV = [
-  { to: "/student/dashboard",     label: "Dashboard",     icon: LayoutDashboard },
-  { to: "/student/notices",       label: "Notices",       icon: Bell },
-  { to: "/student/resources",     label: "Resources",     icon: BookOpen },
-  { to: "/student/timetable",     label: "Timetable",     icon: Clock },
-  { to: "/student/calendar",      label: "Calendar",      icon: Calendar },
+  { to: "/student/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/student/notices", label: "Notices", icon: Bell },
+  { to: "/student/resources", label: "Resources", icon: BookOpen },
+  { to: "/student/timetable", label: "Timetable", icon: Clock },
+  { to: "/student/calendar", label: "Calendar", icon: Calendar },
   { to: "/student/notifications", label: "Notifications", icon: Bell },
-  { to: "/student/profile",       label: "Profile",       icon: User },
+  { to: "/student/profile", label: "Profile", icon: User },
 ];
 
+// Loader on route change
 function RouteChangeLoader() {
   const location = useLocation();
   const { setLoading } = useLoading();
@@ -94,21 +96,37 @@ function RouteChangeLoader() {
   useEffect(() => {
     setLoading(true);
     const timeout = setTimeout(() => setLoading(false), 300);
-    return () => { clearTimeout(timeout); setLoading(false); };
+    return () => {
+      clearTimeout(timeout);
+      setLoading(false);
+    };
   }, [location.pathname]);
 
   return null;
 }
 
 export default function App() {
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  // 🔥 PWA Install Logic
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
   return (
     <LoadingProvider>
       <AuthProvider>
         <BrowserRouter>
           <Toaster position="top-right" />
           <RouteChangeLoader />
+
           <Routes>
-            {/* Public */}
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<StudentRegister />} />
@@ -121,11 +139,11 @@ export default function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard"          element={<SuperAdminDashboard />} />
-              <Route path="colleges"           element={<SuperAdminColleges />} />
+              <Route path="dashboard" element={<SuperAdminDashboard />} />
+              <Route path="colleges" element={<SuperAdminColleges />} />
               <Route path="colleges/:id/stats" element={<CollegeStats />} />
-              <Route path="branches"           element={<SuperAdminBranches />} />
-              <Route path="profile"            element={<SuperAdminProfile />} />
+              <Route path="branches" element={<SuperAdminBranches />} />
+              <Route path="profile" element={<SuperAdminProfile />} />
             </Route>
 
             {/* College */}
@@ -135,15 +153,15 @@ export default function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard"     element={<CollegeDashboard />} />
-              <Route path="branches"      element={<CollegeBranches />} />
-              <Route path="roles"         element={<CollegeRoles />} />
-              <Route path="staff"         element={<CollegeStaff />} />
-              <Route path="students"      element={<CollegeStudents />} />
-              <Route path="notices"       element={<StaffNotices />} />
-              <Route path="resources"     element={<Resources />} />
+              <Route path="dashboard" element={<CollegeDashboard />} />
+              <Route path="branches" element={<CollegeBranches />} />
+              <Route path="roles" element={<CollegeRoles />} />
+              <Route path="staff" element={<CollegeStaff />} />
+              <Route path="students" element={<CollegeStudents />} />
+              <Route path="notices" element={<StaffNotices />} />
+              <Route path="resources" element={<Resources />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="profile"       element={<CollegeProfile />} />
+              <Route path="profile" element={<CollegeProfile />} />
             </Route>
 
             {/* Staff */}
@@ -153,14 +171,14 @@ export default function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard"     element={<StaffDashboard />} />
-              <Route path="students"      element={<StaffStudents />} />
-              <Route path="notices"       element={<StaffNotices />} />
-              <Route path="resources"     element={<Resources />} />
-              <Route path="timetable"     element={<Timetable />} />
-              <Route path="calendar"      element={<CalendarPage />} />
+              <Route path="dashboard" element={<StaffDashboard />} />
+              <Route path="students" element={<StaffStudents />} />
+              <Route path="notices" element={<StaffNotices />} />
+              <Route path="resources" element={<Resources />} />
+              <Route path="timetable" element={<Timetable />} />
+              <Route path="calendar" element={<CalendarPage />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="profile"       element={<StaffProfile />} />
+              <Route path="profile" element={<StaffProfile />} />
             </Route>
 
             {/* Student */}
@@ -170,17 +188,43 @@ export default function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard"     element={<StudentDashboard />} />
-              <Route path="notices"       element={<StaffNotices />} />
-              <Route path="resources"     element={<Resources />} />
-              <Route path="timetable"     element={<Timetable />} />
-              <Route path="calendar"      element={<CalendarPage />} />
+              <Route path="dashboard" element={<StudentDashboard />} />
+              <Route path="notices" element={<StaffNotices />} />
+              <Route path="resources" element={<Resources />} />
+              <Route path="timetable" element={<Timetable />} />
+              <Route path="calendar" element={<CalendarPage />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="profile"       element={<StudentProfile />} />
+              <Route path="profile" element={<StudentProfile />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+
+          {/* 🔥 Install Button */}
+          {installPrompt && (
+            <button
+              onClick={() => {
+                installPrompt.prompt();
+                installPrompt.userChoice.then(() => {
+                  setInstallPrompt(null);
+                });
+              }}
+              style={{
+                position: "fixed",
+                bottom: "20px",
+                right: "20px",
+                padding: "12px 16px",
+                background: "#1976d2",
+                color: "#fff",
+                borderRadius: "10px",
+                border: "none",
+                zIndex: 9999,
+                cursor: "pointer"
+              }}
+            >
+              ⬇️ Install App
+            </button>
+          )}
         </BrowserRouter>
       </AuthProvider>
     </LoadingProvider>
